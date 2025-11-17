@@ -1,0 +1,43 @@
+name: Continuous Deployment to Render
+
+on:
+  workflow_run:
+    workflows: ["Continuous Integration"]
+    types:
+      - completed
+    branches: [main, develop]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    strategy:
+      matrix:
+        # Define environments based on the branch that was pushed
+        environment:
+          - branch: main
+            name: production
+            backend-id: ${{ secrets.RENDER_PROD_BACKEND_ID }}
+            frontend-id: ${{ secrets.RENDER_PROD_FRONTEND_ID }}
+          - branch: develop
+            name: staging
+            backend-id: ${{ secrets.RENDER_STAGING_BACKEND_ID }}
+            frontend-id: ${{ secrets.RENDER_STAGING_FRONTEND_ID }}
+
+    environment:
+      name: ${{ matrix.environment.name }}
+      url: ${{ matrix.environment.name == 'production' && 'https://your-app-backend-prod.onrender.com' || 'https://your-app-backend-staging.onrender.com' }}
+
+    steps:
+      - name: Deploy Backend to Render
+        run: |
+          curl -X POST https://api.render.com/v1/services/${{ matrix.environment.backend-id }}/deploys \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json"
+
+      - name: Deploy Frontend to Render
+        run: |
+          curl -X POST https://api.render.com/v1/services/${{ matrix.environment.frontend-id }}/deploys \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json"

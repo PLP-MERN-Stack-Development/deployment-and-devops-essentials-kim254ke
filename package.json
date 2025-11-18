@@ -1,0 +1,8 @@
+{
+    "name": "socket-chat-root",
+    "private": true,
+    "scripts": {
+      "test": "npm run test --prefix server && npm run test --prefix client"
+    }
+  }
+  

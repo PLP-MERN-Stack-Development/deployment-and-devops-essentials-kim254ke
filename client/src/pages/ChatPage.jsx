@@ -10,6 +10,7 @@ import RoomList from '../components/RoomList';
 
 const ChatPage = ({ username, onLogout }) => {
   const {
+    socket, // <--- 🛠️ FIX: Socket variable added here to resolve 'socket is not defined'
     isConnected,
     messages,
     users,
@@ -104,6 +105,7 @@ const ChatPage = ({ username, onLogout }) => {
   };
 
   const handlePrivateMessage = (userId, username) => {
+    // 🛠️ FIX: Use the destructured socket variable
     const privateRoomId = `private-${Math.min(userId, socket.id)}-${Math.max(
       userId,
       socket.id

@@ -1,5 +1,5 @@
 // ==========================================
-// client/src/hooks/useNotification.js
+// client/src/hooks/useNotification.js - FIXED
 // ==========================================
 import { useEffect, useCallback } from 'react';
 
@@ -39,4 +39,4 @@ export const useNotification = () => {
   return { notify, playSound, showNotification };
 };
 
-export default useNotification;
+// REMOVED: export default useNotification;

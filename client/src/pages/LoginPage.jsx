@@ -1,6 +1,6 @@
 import React from 'react';
 import LoginForm from '../components/LoginForm';
-import { useSocket } from '../context/SocketContext';
+import { useSocket } from '../hooks/useSocket';
 
 const LoginPage = ({ onLogin }) => {
   const { connect } = useSocket();

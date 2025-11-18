@@ -1,5 +1,5 @@
 // ==========================================
-// client/src/hooks/useSocket.js
+// client/src/hooks/useSocket.js - FIXED
 // ==========================================
 import { useContext } from 'react';
 import { SocketContext } from '../context/SocketContext';
@@ -12,4 +12,4 @@ export const useSocket = () => {
   return context;
 };
 
-export default useSocket;
+// REMOVED: export default useSocket;

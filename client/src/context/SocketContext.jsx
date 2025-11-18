@@ -1,18 +1,16 @@
 // ==========================================
-// client/src/context/SocketContext.jsx - FIXED & ENHANCED (Edit + Delete Enabled)
+// client/src/context/SocketContext.jsx - FINAL CORRECTED VERSION
+// Fixes: Duplicate Export Error (and the Fast Refresh error from earlier)
 // ==========================================
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import socket from '../socket/socket';
 
 const SocketContext = createContext();
 
-export const useSocket = () => {
-  const context = useContext(SocketContext);
-  if (!context) throw new Error('useSocket must be used within a SocketProvider');
-  return context;
-};
+// NOTE: The 'useSocket' export is still assumed to be moved out to hooks/useSocket.js
 
-export const SocketProvider = ({ children }) => {
+// 1. REMOVED the 'export' keyword here to prevent duplication
+const SocketProvider = ({ children }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
@@ -179,3 +177,6 @@ export const SocketProvider = ({ children }) => {
 
   return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;
 };
+
+// 2. Keep the combined export to export both SocketContext and SocketProvider
+export { SocketContext, SocketProvider };

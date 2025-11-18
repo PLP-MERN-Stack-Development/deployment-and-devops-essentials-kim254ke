@@ -1,7 +1,7 @@
-// client/src/pages/ChatPage.jsx (FIXED - Using MongoDB _id)
+// client/src/pages/ChatPage.jsx (FIXED - Removed unused reactions state)
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Users, Bell, Download } from 'lucide-react';
-import { useSocket } from '../context/SocketContext';
+import { useSocket } from '../hooks/useSocket';
 import { useNotification } from '../hooks/useNotification';
 import ChatMessage from '../components/ChatMessage';
 import ChatInput from '../components/ChatInput';
@@ -31,7 +31,7 @@ const ChatPage = ({ username, onLogout }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [notifications, setNotifications] = useState(0);
   const [unreadCounts, setUnreadCounts] = useState({});
-  const [reactions, setReactions] = useState({});
+  // const [reactions, setReactions] = useState({}); // <-- REMOVED UNUSED STATE
   const messagesEndRef = useRef(null);
   const prevMessagesLengthRef = useRef(messages.length);
 
@@ -87,10 +87,13 @@ const ChatPage = ({ username, onLogout }) => {
 
   const handleAddReaction = (messageId, emoji) => {
     addReaction(messageId, emoji);
+    // REMOVED UNUSED setReactions call
+    /*
     setReactions(prev => ({
       ...prev,
       [messageId]: [...(prev[messageId] || []), emoji]
     }));
+    */
   };
 
   const handleEditMessage = (messageId, newText) => {

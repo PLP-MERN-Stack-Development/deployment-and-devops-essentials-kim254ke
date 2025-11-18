@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import LoginPage from './pages/LoginPage';
 import ChatPage from './pages/ChatPage';
-import { useSocket } from './context/SocketContext';
+// ❌ REMOVED: Unused import
+// import { useSocket } from './context/SocketContext';
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

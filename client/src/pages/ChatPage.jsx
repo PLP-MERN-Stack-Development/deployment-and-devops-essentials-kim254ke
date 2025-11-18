@@ -10,7 +10,7 @@ import RoomList from '../components/RoomList';
 
 const ChatPage = ({ username, onLogout }) => {
   const {
-    socket, // <--- 🛠️ FIX: Socket variable added here to resolve 'socket is not defined'
+    socket,
     isConnected,
     messages,
     users,
@@ -93,7 +93,6 @@ const ChatPage = ({ username, onLogout }) => {
     }));
   };
 
-  // ✅ FIXED: Use MongoDB _id instead of custom id
   const handleEditMessage = (messageId, newText) => {
     if (!messageId) return;
     editMessage(messageId, newText);
@@ -104,8 +103,7 @@ const ChatPage = ({ username, onLogout }) => {
     deleteMessage(messageId);
   };
 
-  const handlePrivateMessage = (userId, username) => {
-    // 🛠️ FIX: Use the destructured socket variable
+  const handlePrivateMessage = (userId) => {
     const privateRoomId = `private-${Math.min(userId, socket.id)}-${Math.max(
       userId,
       socket.id
@@ -218,7 +216,6 @@ const ChatPage = ({ username, onLogout }) => {
                   message={msg}
                   isOwnMessage={msg.sender === username}
                   onAddReaction={handleAddReaction}
-                  reactions={reactions[msg._id]}
                   onEdit={handleEditMessage}
                   onDelete={handleDeleteMessage}
                 />

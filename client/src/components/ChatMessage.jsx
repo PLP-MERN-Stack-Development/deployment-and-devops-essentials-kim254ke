@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Check, CheckCheck, Smile, MoreVertical, Edit2, Trash2, Copy } from 'lucide-react';
 
-const ChatMessage = ({ message, isOwnMessage, onAddReaction, reactions, onEdit, onDelete }) => {
+const ChatMessage = ({ message, isOwnMessage, onAddReaction, onEdit, onDelete }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isEditing, setIsEditing] = useState(false);

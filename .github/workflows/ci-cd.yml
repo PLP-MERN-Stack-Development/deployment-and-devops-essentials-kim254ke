@@ -1,0 +1,70 @@
+name: MERN Chat App CI/CD Pipeline
+
+# Controls when the workflow is triggered
+on:
+  push:
+    branches:
+      - main # Run when code is pushed to the main branch
+  pull_request:
+    branches:
+      - main # Run when a pull request targets the main branch
+
+# A workflow run is made up of one or more jobs
+jobs:
+  build-test-and-deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    
+    # Define environment variables for directory paths
+    env:
+      CLIENT_DIR: ./client
+      SERVER_DIR: ./server
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: ⬇️ Checkout Repository Code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Use a stable Node.js version
+
+      # --- CI: Backend (Express) Checks ---
+      
+      - name: 📦 Install Server Dependencies
+        run: npm install
+        working-directory: ${{ env.SERVER_DIR }}
+        
+      - name: 🧪 Run Server Tests and Linting
+        run: npm test # Assumes 'npm test' script exists in server/package.json
+        working-directory: ${{ env.SERVER_DIR }}
+        
+      # --- CI: Frontend (React) Checks ---
+      
+      - name: 📦 Install Client Dependencies
+        run: npm install
+        working-directory: ${{ env.CLIENT_DIR }}
+        
+      - name: 🏗️ Build Frontend Application
+        run: npm run build # Verifies the client code is production-ready
+        working-directory: ${{ env.CLIENT_DIR }}
+
+      # --- CD: Deployment Triggers (Uses Secrets) ---
+      
+      # The deployment steps only run if all previous steps (tests, build) were successful
+      # and the event was a 'push' to the main branch (not a pull request).
+      
+      - name: 🚀 Trigger Server Deployment on Render
+        run: |
+          echo "Triggering new build for the Express backend..."
+          curl -X POST ${{ secrets.RENDER_SERVER_HOOK }}
+        # RENDER_SERVER_HOOK MUST be set in GitHub Secrets
+        if: success() && github.event_name == 'push'
+        
+      - name: 🌐 Trigger Client Deployment on Render
+        run: |
+          echo "Triggering new build for the React frontend..."
+          curl -X POST ${{ secrets.RENDER_CLIENT_HOOK }}
+        # RENDER_CLIENT_HOOK MUST be set in GitHub Secrets
+        if: success() && github.event_name == 'push'

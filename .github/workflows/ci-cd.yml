@@ -1,4 +1,6 @@
-name: Full MERN Stack CI/CD Pipeline - Fixed
+# force workflow reload - 001
+
+name: Full MERN Stack CI/CD Pipeline - Fixed - Reloaded
 
 on:
   push:
@@ -12,7 +14,6 @@ jobs:
   build-test-and-deploy:
     runs-on: ubuntu-latest
     
-    # Define environment variables for directory paths
     env:
       CLIENT_DIR: ./client
       SERVER_DIR: ./server
@@ -29,38 +30,33 @@ jobs:
       # --- CI: Backend (Express) Checks ---
       
       - name: 📦 Install Server Dependencies
-        run: npm install
         working-directory: ${{ env.SERVER_DIR }}
-        
-      # 🛑 NOTE: Removed 'npm test' to fix failure. Server install success implies readiness.
+        run: npm install
         
       # --- CI: Frontend (React) Checks ---
       
       - name: 📦 Install Client Dependencies
-        run: npm install
         working-directory: ${{ env.CLIENT_DIR }}
+        run: npm install
         
       - name: 🧹 Run Client Linting
-        run: npm run lint # This script exists in your client/package.json
         working-directory: ${{ env.CLIENT_DIR }}
+        run: npm run lint
         
       - name: 🏗️ Build Frontend Application
-        run: npm run build # Verifies the client code is production-ready
         working-directory: ${{ env.CLIENT_DIR }}
+        run: npm run build
 
-      # --- CD: Deployment Triggers (Uses Render Hooks) ---
-      
-      # Deployment only runs if all CI steps above were successful (success()) 
-      # and the event was a push to the main branch.
+      # --- CD: Deployment Triggers ---
       
       - name: 🚀 Trigger Server Deployment on Render
+        if: success() && github.event_name == 'push'
         run: |
           echo "Triggering new build for the Express backend..."
           curl -X POST ${{ secrets.RENDER_SERVER_HOOK }}
-        if: success() && github.event_name == 'push'
         
       - name: 🌐 Trigger Client Deployment on Render
+        if: success() && github.event_name == 'push'
         run: |
           echo "Triggering new build for the React frontend..."
           curl -X POST ${{ secrets.RENDER_CLIENT_HOOK }}
-        if: success() && github.event_name == 'push'

@@ -47,7 +47,7 @@ jobs:
 
       - name: 🧹 Run Client Linting (ignore errors)
         working-directory: ${{ env.CLIENT_DIR }}
-        run: npm run lint || true   # <-- prevents lint failures from breaking CI
+        run: npm run lint || true   # <-- ignores lint errors so CI passes
 
       - name: 🏗️ Build Frontend Application
         working-directory: ${{ env.CLIENT_DIR }}

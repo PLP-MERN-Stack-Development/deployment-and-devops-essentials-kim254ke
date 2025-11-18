@@ -1,6 +1,4 @@
-# force workflow reload - 002
-
-name: Full MERN Stack CI/CD Pipeline - Fixed - Reloaded
+name: Full MERN Stack CI/CD Pipeline - Fixed
 
 on:
   push:
@@ -13,48 +11,57 @@ on:
 jobs:
   build-test-and-deploy:
     runs-on: ubuntu-latest
-    
+
     env:
       CLIENT_DIR: ./client
       SERVER_DIR: ./server
 
     steps:
+      # -----------------------------
+      # Checkout repository
+      # -----------------------------
       - name: ⬇️ Checkout Repository Code
         uses: actions/checkout@v4
 
+      # -----------------------------
+      # Setup Node.js
+      # -----------------------------
       - name: 🔧 Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # --- CI: Backend (Express) Checks ---
-      
+      # -----------------------------
+      # Server (Express) CI
+      # -----------------------------
       - name: 📦 Install Server Dependencies
         working-directory: ${{ env.SERVER_DIR }}
         run: npm install
-        
-      # --- CI: Frontend (React) Checks ---
-      
+
+      # -----------------------------
+      # Client (React) CI
+      # -----------------------------
       - name: 📦 Install Client Dependencies
         working-directory: ${{ env.CLIENT_DIR }}
         run: npm install
-        
+
       - name: 🧹 Run Client Linting (ignore errors)
         working-directory: ${{ env.CLIENT_DIR }}
-        run: npm run lint || true   # <-- ignore lint errors in CI
-        
+        run: npm run lint || true   # <-- prevents lint failures from breaking CI
+
       - name: 🏗️ Build Frontend Application
         working-directory: ${{ env.CLIENT_DIR }}
         run: npm run build
 
-      # --- CD: Deployment Triggers ---
-      
+      # -----------------------------
+      # Deployment (Render Hooks)
+      # -----------------------------
       - name: 🚀 Trigger Server Deployment on Render
         if: success() && github.event_name == 'push'
         run: |
           echo "Triggering new build for the Express backend..."
           curl -X POST ${{ secrets.RENDER_SERVER_HOOK }}
-        
+
       - name: 🌐 Trigger Client Deployment on Render
         if: success() && github.event_name == 'push'
         run: |
